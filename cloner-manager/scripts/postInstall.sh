@@ -16,7 +16,7 @@ source /var/cloner-manager/virtualenv/bin/activate
 pip install PyYAML==3.13
 pip install Flask==1.0.2
 pip install requests==2.20.0
-#pip install GitPython==2.1.11
+pip install GitPython==2.1.11
 
 # Deactivate virtualenv
 deactivate
