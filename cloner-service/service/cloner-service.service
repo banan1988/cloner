@@ -1,0 +1,13 @@
+[Unit]
+Description=Cloner-service Startup process
+Wants=network.target
+After=network.target rc-local.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cloner-service -config-dir /etc/cloner-service.d -log-file /var/log/cloner-service/cloner-service.log
+TimeoutStartSec=0
+User=cloner-service
+
+[Install]
+WantedBy=multi-user.target

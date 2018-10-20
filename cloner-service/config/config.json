@@ -1,0 +1,17 @@
+{
+  "bootstrap": true,
+  "server": true,
+
+  "bind_addr": "0.0.0.0",
+
+  "ui": true,
+
+  "datacenter": "dc1",
+  "data_dir": "/var/cloner-service",
+
+  "log_level": "INFO",
+  "enable_syslog": false,
+  "enable_debug": true,
+
+  "rejoin_after_leave": true
+}
