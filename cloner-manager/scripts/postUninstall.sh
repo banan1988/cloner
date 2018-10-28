@@ -8,4 +8,4 @@ rm -rf /opt/cloner-manager
 rm -rf /var/cloner-manager
 rm -rf /var/log/cloner-manager
 
-userdel ${USERNAME}
+getent passwd ${USERNAME} && userdel ${USERNAME} || echo "User ${USERNAME} does not exist. Skip deleting..."

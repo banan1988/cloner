@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gradle clean buildDeb "$@"
+gradle clean buildDeb removeDebChanges "$@"

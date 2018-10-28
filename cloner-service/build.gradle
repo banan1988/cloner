@@ -5,12 +5,12 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.netflix.nebula:gradle-ospackage-plugin:5.0.2"
+        classpath "com.netflix.nebula:gradle-ospackage-plugin:5.0.4"
     }
 }
 
 plugins {
-    id "nebula.ospackage" version "5.0.2" apply true
+    id "nebula.ospackage" version "5.0.4" apply true
     id "de.undercouch.download" version "3.4.3" apply true
 }
 
@@ -23,7 +23,7 @@ task downloadZipFile(type: Download) {
 
 // unpack bin
 task downloadAndUnzipFile(dependsOn: downloadZipFile, type: Copy) {
-    from tarTree(downloadZipFile.dest)
+    from tarTree(resources.gzip(downloadZipFile.dest))
     into buildDir
 }
 
@@ -31,7 +31,6 @@ ospackage {
     packageName = osPackageName
     version = osPackageVersion
     release = osPackageRelease
-    arch = X86_64
     os = LINUX
     user = 'root'
     permissionGroup = 'root'
@@ -39,7 +38,6 @@ ospackage {
 
     // scripts
     preInstall file('scripts/preInstall.sh')
-    postInstall file('scripts/postInstall.sh')
     preUninstall file('scripts/preUninstall.sh')
     postUninstall file('scripts/postUninstall.sh')
 
@@ -54,12 +52,24 @@ ospackage {
     }
 
     // bin
+    from("cloner/cloner-service.py") {
+        into '/opt/cloner-service'
+        fileType CONFIG | NOREPLACE
+
+        user 'cloner-service'
+        permissionGroup 'cloner-service'
+        fileMode 0755
+    }
+    link("/usr/bin/cloner-service", "/opt/cloner-service/cloner-service.py", 0755)
+
+    // lib
     from("cloner") {
         into '/opt/cloner-service'
+        exclude 'cloner-service.py'
+
         user 'cloner-service'
         permissionGroup 'cloner-service'
     }
-    link("/usr/bin/cloner-service", "/opt/cloner-service/cloner-service.py", 0755)
 
     // config
     from("config/config.json") {
@@ -69,6 +79,16 @@ ospackage {
         user 'cloner-service'
         permissionGroup 'cloner-service'
         fileMode 0644
+    }
+
+    // init service
+    from("service/cloner-service") {
+        into '/etc/init.d'
+        fileType CONFIG | NOREPLACE
+
+        user 'root'
+        permissionGroup 'root'
+        fileMode 0755
     }
 
     // systemd service
@@ -85,6 +105,8 @@ ospackage {
 buildRpm {
     dependsOn downloadAndUnzipFile
 
+    arch = 'X86_64'
+
     user = 'cloner-service'
     permissionGroup = 'cloner-service'
 
@@ -99,9 +121,16 @@ buildRpm {
     directory('/opt/cloner-service', 0644)
     directory('/var/cloner-service', 0755)
     directory('/var/log/cloner-service', 0755)
+
+    // scripts
+    postInstall file('scripts/rpm/postInstall.sh')
 }
 
 buildDeb {
+    dependsOn downloadAndUnzipFile
+
+    arch = 'amd64'
+
     user = 'cloner-service'
     permissionGroup = 'cloner-service'
 
@@ -109,11 +138,21 @@ buildDeb {
 
     // requires
     requires('python3.4')
-    requires('python3.4-virtualenv')
+    requires('python3.4-venv')
 
     // directories
     directory('/etc/cloner-service.d', 0644)
     directory('/opt/cloner-service', 0644)
     directory('/var/cloner-service', 0755)
     directory('/var/log/cloner-service', 0755)
+
+    // scripts
+    postInstall file('scripts/deb/postInstall.sh')
+}
+
+task removeDebChanges(type: Delete) {
+    dependsOn buildDeb
+
+    delete "${buildDir}/distributions/${osPackageName}_${osPackageVersion}-${osPackageRelease}_amd64.changes"
+    followSymlinks = true
 }

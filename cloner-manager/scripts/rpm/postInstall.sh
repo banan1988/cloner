@@ -6,11 +6,11 @@ VIRTUAL_ENV_DIR=/var/cloner-manager/virtualenv
 if [ -d "${VIRTUAL_ENV_DIR}" ] ; then
     echo "Directory ${VIRTUAL_ENV_DIR} exists."
 else
-    /usr/bin/virtualenv ${VIRTUAL_ENV_DIR}
+    virtualenv ${VIRTUAL_ENV_DIR}
 fi
 
 # Activate virtualenv
-source /var/cloner-manager/virtualenv/bin/activate
+. /var/cloner-manager/virtualenv/bin/activate
 
 # Install packages
 pip install PyYAML==3.13
@@ -21,5 +21,8 @@ pip install GitPython==2.1.11
 # Deactivate virtualenv
 deactivate
 
-# Reload systemd
-/usr/bin/systemctl daemon-reload
+SERVICE_MANAGER=$(ps -p 1 -o comm=)
+if [ "${SERVICE_MANAGER}" = "systemd" ]; then
+    # Reload systemd
+    systemctl daemon-reload
+fi

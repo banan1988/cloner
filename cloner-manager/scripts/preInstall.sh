@@ -2,5 +2,5 @@
 
 USERNAME=cloner-manager
 
-groupadd ${USERNAME}
-useradd -Mg ${USERNAME} ${USERNAME}
+getent group ${USERNAME} || groupadd ${USERNAME}
+getent passwd ${USERNAME} || useradd -Mg ${USERNAME} ${USERNAME}
