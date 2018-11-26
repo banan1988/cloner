@@ -7,14 +7,14 @@
 RedHat family
 
 ```sh
-$ sudo rpm -i cloner-manger
+$ sudo rpm -i cloner-manager
 $ sudo rpm -i cloner-service
 ```
 
 Debian family
 
 ```sh
-$ sudo dpkg -i cloner-manger
+$ sudo dpkg -i cloner-manager
 $ sudo dpkg -i cloner-service
 ```
 

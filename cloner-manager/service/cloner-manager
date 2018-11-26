@@ -5,6 +5,8 @@ PID_FILE="/var/run/${NAME}.pid"
 LOG_stdout="/var/log/${NAME}/${NAME}.log"
 LOG_stderr=${LOG_stdout}
 
+ENV_VARS=/etc/cloner-manager.d/env_vars
+
 CMD="/usr/bin/cloner-manager"
 CMD_ARGS="-config-dir /etc/cloner-manager.d -log-file ${LOG_stdout}"
 
@@ -12,13 +14,15 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NO_COLOR='\033[0m'
 
+. ${ENV_VARS}
+
 echo_ok() {
   echo -e " \t\t\t[ ${GREEN}OK${NO_COLOR} ]"
 }
 
 echo_failed() {
   local msg=" \t\t\t[ ${RED}FAILED${NO_COLOR} ]"
-  if [ -z "$1" ] ; then
+  if [[ -z "$1" ]] ; then
     echo -e ${msg}
   else
     echo -e "${msg} [ $1 ]"
@@ -38,11 +42,11 @@ get_pid() {
 }
 
 is_running() {
-    [ -f "${PID_FILE}" ] && ps `get_pid` > /dev/null 2>&1
+    [[ -f "${PID_FILE}" ]] && ps `get_pid` > /dev/null 2>&1
 }
 
 clean() {
-  if [ -f "${PID_FILE}" ] ; then
+  if [[ -f "${PID_FILE}" ]] ; then
       rm "${PID_FILE}"
   fi
 }
@@ -112,7 +116,7 @@ stop() {
 
 restart() {
   stop
-  if [ $? -eq 0 ] ; then
+  if [[ $? -eq 0 ]] ; then
     start
   fi
   return $?

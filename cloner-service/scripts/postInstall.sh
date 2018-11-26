@@ -3,10 +3,10 @@
 VIRTUAL_ENV_DIR=/var/cloner-service/virtualenv
 
 # Create virtualenv
-if [ -d "${VIRTUAL_ENV_DIR}" ] ; then
+if [[ -d "${VIRTUAL_ENV_DIR}" ]] ; then
     echo "Directory ${VIRTUAL_ENV_DIR} exists."
 else
-    virtualenv ${VIRTUAL_ENV_DIR}
+    virtualenv --python=python3 ${VIRTUAL_ENV_DIR}
 fi
 
 # Activate virtualenv
@@ -26,7 +26,7 @@ GOREPLAY=/opt/cloner-service/goreplay
 setcap "cap_net_raw,cap_net_admin+eip" ${GOREPLAY}
 
 SERVICE_MANAGER=$(ps -p 1 -o comm=)
-if [ "${SERVICE_MANAGER}" = "systemd" ]; then
+if [[ "${SERVICE_MANAGER}" = "systemd" ]]; then
     # Reload systemd
     systemctl daemon-reload
 fi

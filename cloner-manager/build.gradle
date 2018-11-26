@@ -24,6 +24,7 @@ ospackage {
 
     // scripts
     preInstall file('scripts/preInstall.sh')
+    postInstall file('scripts/postInstall.sh')
     preUninstall file('scripts/preUninstall.sh')
     postUninstall file('scripts/postUninstall.sh')
 
@@ -49,6 +50,16 @@ ospackage {
 
     // config
     from("config/config.json") {
+        into '/etc/cloner-manager.d'
+        fileType CONFIG | NOREPLACE
+
+        user 'cloner-manager'
+        permissionGroup 'cloner-manager'
+        fileMode 0644
+    }
+
+    // env_vars
+    from("config/env_vars") {
         into '/etc/cloner-manager.d'
         fileType CONFIG | NOREPLACE
 
@@ -95,9 +106,6 @@ buildRpm {
     directory('/opt/cloner-manager', 0644)
     directory('/var/cloner-manager', 0755)
     directory('/var/log/cloner-manager', 0755)
-
-    // scripts
-    postInstall file('scripts/rpm/postInstall.sh')
 }
 
 buildDeb {
@@ -110,16 +118,13 @@ buildDeb {
 
     // requires
     requires('python3.4')
-    requires('python3.4-venv')
+    requires('python-virtualenv')
 
     // directories
     directory('/etc/cloner-manager.d', 0644)
     directory('/opt/cloner-manager', 0644)
     directory('/var/cloner-manager', 0755)
     directory('/var/log/cloner-manager', 0755)
-
-    // scripts
-    postInstall file('scripts/deb/postInstall.sh')
 }
 
 task removeDebChanges(type: Delete) {

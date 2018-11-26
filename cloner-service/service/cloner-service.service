@@ -5,6 +5,7 @@ After=network.target rc-local.service
 
 [Service]
 Type=simple
+EnvironmentFile=-/etc/cloner-service.d/env_vars
 ExecStart=/usr/bin/cloner-service -config-dir /etc/cloner-service.d -log-file /var/log/cloner-service/cloner-service.log
 TimeoutStartSec=0
 User=cloner-service

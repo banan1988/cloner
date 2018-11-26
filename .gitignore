@@ -4,3 +4,4 @@
 build
 *.pyc
 .download
+venv

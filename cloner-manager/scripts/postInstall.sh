@@ -3,10 +3,10 @@
 VIRTUAL_ENV_DIR=/var/cloner-manager/virtualenv
 
 # Create virtualenv
-if [ -d "${VIRTUAL_ENV_DIR}" ] ; then
+if [[ -d "${VIRTUAL_ENV_DIR}" ]] ; then
     echo "Directory ${VIRTUAL_ENV_DIR} exists."
 else
-    virtualenv ${VIRTUAL_ENV_DIR}
+    virtualenv --python=python3 ${VIRTUAL_ENV_DIR}
 fi
 
 # Activate virtualenv
@@ -22,7 +22,7 @@ pip install GitPython==2.1.11
 deactivate
 
 SERVICE_MANAGER=$(ps -p 1 -o comm=)
-if [ "${SERVICE_MANAGER}" = "systemd" ]; then
+if [[ "${SERVICE_MANAGER}" = "systemd" ]]; then
     # Reload systemd
     systemctl daemon-reload
 fi
