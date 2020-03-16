@@ -1,4 +1,4 @@
-PyYAML==3.13
+PyYAML==5.1
 Flask==1.0.2
 requests==2.20.0
 GitPython==2.1.11
