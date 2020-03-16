@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 buildscript {
     repositories {
         maven {
@@ -30,6 +32,8 @@ ospackage {
 
     // bin
     from("cloner/cloner-manager.py") {
+        filter(ReplaceTokens, tokens: ['version': version])
+
         into '/opt/cloner-manager'
         fileType CONFIG | NOREPLACE
 

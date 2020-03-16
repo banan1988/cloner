@@ -10,7 +10,7 @@ else
 fi
 
 # Activate virtualenv
-. /var/cloner-service/virtualenv/bin/activate
+. "${VIRTUAL_ENV_DIR}/bin/activate"
 
 # Install packages
 pip install PyYAML==3.13
